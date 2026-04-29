@@ -10,7 +10,7 @@ Use it to make coding agents (OpenCode, Claude Code, etc.) talk to local LM Stud
 - No need to pull GGUF files — the bridge maps Ollama model names directly to OpenAI model IDs
 - Supports streaming, tool calling, structured outputs, and all numeric options
 
-## Quick Start
+## Installation
 
 ### Build from source
 
@@ -22,8 +22,20 @@ cd ollama-bridge
 go build -o ollama-bridge .
 ```
 
-### Configure (optional — defaults work out of the box)
-cat > config.json <<EOF
+### Install via `go install` (latest main)
+
+```bash
+go install github.com/hi100e/ollama-bridge@latest
+# Binary is placed in $GOPATH/bin or ~/go/bin
+```
+
+## Quick Start
+
+### Configure
+
+Create a config file (optional — defaults work out of the box):
+
+```json
 {
   "listen_addr": ":11435",
   "base_url": "http://127.0.0.1:1234/v1",
@@ -32,12 +44,12 @@ cat > config.json <<EOF
     "qwen3.6-coder:30b": "qwen/qwen3-coder-30b"
   }
 }
-EOF
+```
 
-# Run
-OLLAMA_BRIDGE_CONFIG=config.json ./ollama-bridge &
+### Run
 
-# Test
+```bash
+OLLAMA_BRIDGE_CONFIG=config.json ollama-bridge &
 curl http://localhost:11435/api/tags | jq .
 ```
 
