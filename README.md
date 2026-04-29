@@ -66,7 +66,7 @@ ollama-bridge --version   # or -v
 
 | Field | Default | Description |
 |-------|---------|-------------|
-| `listen_addr` | `:11434` | Port to listen on (use a different port if real Ollama is running) |
+|| `listen_addr` | `:21434` | Port to listen on (use a different port if real Ollama is running) |
 | `base_url` | `http://127.0.0.1:1234/v1` | OpenAI-compatible API endpoint |
 | `model_map` | `{}` | Map of Ollama-style names → actual model IDs on the backend |
 
@@ -93,7 +93,7 @@ Set via JSON config file or the `OLLAMA_BRIDGE_CONFIG` environment variable.
 ### OpenCode
 
 ```bash
-export OLLAMA_BASE_URL=http://localhost:11435
+export OLLAMA_BASE_URL=http://localhost:21434
 opencode run 'fix the auth bug' --model qwen3.6-coder:30b
 ```
 
@@ -106,7 +106,7 @@ Or configure permanently in `~/.opencode/opencode.json`:
       "npm": "@ai-sdk/openai-compatible",
       "name": "Ollama Bridge",
       "options": {
-        "baseURL": "http://localhost:11435/v1"
+        "baseURL": "http://localhost:21434/v1"
       },
       "models": {
         "qwen3.6-coder:30b": { "name": "qwen3.6-coder:30b" }
@@ -121,7 +121,7 @@ Or configure permanently in `~/.opencode/opencode.json`:
 Set the `OPENAI_BASE_URL` and `OPENAI_API_KEY` (any non-empty value) to point at the bridge:
 
 ```bash
-export OPENAI_BASE_URL=http://localhost:11435/v1
+export OPENAI_BASE_URL=http://localhost:21434/v1
 export OPENAI_API_KEY=ollama-bridge
 claude 'refactor this module' --model qwen3.6-coder:30b
 ```
