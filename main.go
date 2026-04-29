@@ -847,12 +847,87 @@ func tagsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var models []ModelSummary
-	for name := range config.ModelMap {
+
+	// Try fetching from the OpenAI backend's /v1/models endpoint.
+	type openaiModel struct {
+		ID      string `json:"id"`
+		Object  string `json:"object"`
+		Created int64  `json:"created,omitempty"`
+		OwnedBy string `json:"owned_by,omitempty"`
+	}
+
+	type openaiListResponse struct {
+		Object string         `json:"object"`
+		Data   []openaiModel  `json:"data"`
+	}
+
+	resp, err := http.Get(config.BaseURL + "/models")
+	if err == nil && resp.StatusCode == http.StatusOK {
+		var listResp openaiListResponse
+		if json.NewDecoder(resp.Body).Decode(&listResp) == nil && len(listResp.Data) > 0 {
+			for _, m := range listResp.Data {
+				name := resolveModel(m.ID)
+				models = append(models, ModelSummary{
+					Name:       name,
+					Model:      name,
+					RemoteModel: m.ID,
+					Size:       0, // unknown for remote backends
+					Digest:     "sha256:" + strings.ReplaceAll(m.ID, "/", ""),
+					ModifiedAt: time.Unix(m.Created, 0).UTC().Format(time.RFC3339),
+					Details: ModelDetails{
+						Format:            "gguf",
+						Family:            "",
+						Families:          []string{},
+						ParameterSize:     "unknown",
+						QuantizationLevel: "F16",
+					},
+				})
+			}
+			resp.Body.Close()
+
+			// Merge in any model_map entries not already covered by backend.
+			for name, backendID := range config.ModelMap {
+				found := false
+				for _, m := range models {
+					if m.RemoteModel == backendID || m.Name == name {
+						found = true
+						break
+					}
+				}
+				if !found {
+					models = append(models, ModelSummary{
+						Name:       name,
+						Model:      name,
+						RemoteModel: backendID,
+						Size:       0,
+						Digest:     "sha256:" + strings.ReplaceAll(backendID, "/", ""),
+						ModifiedAt: time.Now().UTC().Format(time.RFC3339),
+						Details: ModelDetails{
+							Format:            "gguf",
+							Family:            "",
+							Families:          []string{},
+							ParameterSize:     "unknown",
+							QuantizationLevel: "F16",
+						},
+					})
+				}
+			}
+
+			resp := TagsResponse{Models: models}
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(resp)
+			return
+		}
+		resp.Body.Close()
+	}
+
+	// Fallback to model_map only.
+	for name, backendID := range config.ModelMap {
 		models = append(models, ModelSummary{
 			Name:       name,
 			Model:      name,
-			Size:       0, // unknown for remote backends
-			Digest:     "sha256:" + strings.ReplaceAll(name, "/", ""),
+			Size:       0,
+			Digest:     "sha256:" + strings.ReplaceAll(backendID, "/", ""),
 			ModifiedAt: time.Now().UTC().Format(time.RFC3339),
 			Details: ModelDetails{
 				Format:            "gguf",
@@ -864,9 +939,9 @@ func tagsHandler(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	resp := TagsResponse{Models: models}
+	respOut := TagsResponse{Models: models}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(resp)
+	json.NewEncoder(w).Encode(respOut)
 }
 
 // ─── /api/version handler ─────────────────────────────────────────────

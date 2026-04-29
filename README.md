@@ -78,7 +78,7 @@ Set via JSON config file or the `OLLAMA_BRIDGE_CONFIG` environment variable.
 
 - **POST `/api/chat`** — Chat completions with streaming, tool calling, structured outputs
 - **POST `/api/generate`** — Text generation with streaming and options
-- **GET `/api/tags`** — Lists configured models
+- **GET `/api/tags`** — Lists models from the OpenAI backend's `/v1/models`, merged with `model_map` aliases
 - **GET `/api/version`** — Returns Ollama version `0.21.0`
 
 ### Implemented (placeholder)
