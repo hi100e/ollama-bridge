@@ -22,11 +22,18 @@ cd ollama-bridge
 go build -o ollama-bridge .
 ```
 
+To embed a version string at build time:
+
+```bash
+go build -ldflags="-X main.Version=v0.2.0" -o ollama-bridge .
+```
+
 ### Install via `go install` (latest main)
 
 ```bash
 go install github.com/hi100e/ollama-bridge@latest
 # Binary is placed in $GOPATH/bin or ~/go/bin
+# Version will show as "dev" since ldflags cannot be used with go install
 ```
 
 ## Quick Start
@@ -49,6 +56,12 @@ OLLAMA_BRIDGE_CONFIG=config.json ollama-bridge &
 curl http://localhost:11435/api/tags | jq .
 ```
 
+Print the binary version:
+
+```bash
+ollama-bridge --version   # or -v
+```
+
 ## Configuration
 
 | Field | Default | Description |
@@ -66,7 +79,7 @@ Set via JSON config file or the `OLLAMA_BRIDGE_CONFIG` environment variable.
 - **POST `/api/chat`** — Chat completions with streaming, tool calling, structured outputs
 - **POST `/api/generate`** — Text generation with streaming and options
 - **GET `/api/tags`** — Lists configured models
-- **GET `/api/version`** — Returns Ollama version `0.5.7`
+- **GET `/api/version`** — Returns Ollama version `0.21.0`
 
 ### Implemented (placeholder)
 

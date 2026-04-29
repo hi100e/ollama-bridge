@@ -12,6 +12,9 @@ import (
 	"time"
 )
 
+// Version is set at build time via ldflags.
+var Version = "dev"
+
 // Config holds the bridge configuration.
 type Config struct {
 	ListenAddr string            `json:"listen_addr"`
@@ -1057,6 +1060,14 @@ func pushHandler(w http.ResponseWriter, r *http.Request) {
 // ─── main ──────────────────────────────────────────────────────────────
 
 func main() {
+	// Handle -v/--version before anything else.
+	for _, arg := range os.Args[1:] {
+		if arg == "-v" || arg == "--version" {
+			fmt.Println("ollama-bridge", Version)
+			os.Exit(0)
+		}
+	}
+
 	configFile := os.Getenv("OLLAMA_BRIDGE_CONFIG")
 	if configFile == "" {
 		configFile = "/home/hi/.opencode/ollama-bridge.json"
