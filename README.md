@@ -33,18 +33,14 @@ go install github.com/hi100e/ollama-bridge@latest
 
 ### Configure
 
-Create a config file (optional — defaults work out of the box):
+Copy and edit the example config:
 
-```json
-{
-  "listen_addr": ":11435",
-  "base_url": "http://127.0.0.1:1234/v1",
-  "model_map": {
-    "qwen3.6:35b": "unsloth/qwen3.6-35b-a3b",
-    "qwen3.6-coder:30b": "qwen/qwen3-coder-30b"
-  }
-}
+```bash
+cp config.example.json config.json
+# Edit config.json with your LM Studio URL and model mappings
 ```
+
+See [`config.example.json`](config.example.json) for a full reference.
 
 ### Run
 
