@@ -874,7 +874,7 @@ func versionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := VersionResponse{Version: "0.5.7"}
+	resp := VersionResponse{Version: "0.21.0"}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)
 }
