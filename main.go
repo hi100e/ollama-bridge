@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -1058,44 +1057,6 @@ func pushHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]any{"status": "ok"})
 }
 
-// ─── OpenAI /v1/models handler (proxies to backend) ──────────────────
-
-type openaiModelResponse struct {
-	ID      string   `json:"id"`
-	Object  string   `json:"object"`
-	Created int64    `json:"created,omitempty"`
-	OwnedBy string   `json:"owned_by,omitempty"`
-	Root    string   `json:"root,omitempty"`
-	Parent  string   `json:"parent,omitempty"`
-}
-
-type openaiModelsListResponse struct {
-	Object string               `json:"object"`
-	Data   []openaiModelResponse `json:"data"`
-}
-
-func modelsHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	// Proxy the request directly to the OpenAI backend's /v1/models endpoint.
-	reqURL := config.BaseURL + "/models"
-	resp, err := http.Get(reqURL)
-	if err != nil {
-		log.Printf("Error fetching models from backend: %v", err)
-		http.Error(w, fmt.Sprintf("backend error: %v", err), http.StatusBadGateway)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Forward the response body and status code as-is.
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(resp.StatusCode)
-	io.Copy(w, resp.Body)
-}
-
 // ─── main ──────────────────────────────────────────────────────────────
 
 func main() {
@@ -1143,9 +1104,6 @@ func main() {
 	http.HandleFunc("/api/create", createHandler)
 	http.HandleFunc("/api/pull", pullHandler)
 	http.HandleFunc("/api/push", pushHandler)
-
-	// Register OpenAI-compatible endpoints.
-	http.HandleFunc("/v1/models", modelsHandler)
 
 	log.Printf("ollama-bridge listening on %s", config.ListenAddr)
 	log.Printf("  → OpenAI backend: %s", config.BaseURL)
