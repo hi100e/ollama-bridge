@@ -88,6 +88,10 @@ Set via JSON config file or the `OLLAMA_BRIDGE_CONFIG` environment variable.
 - **POST `/api/embed`** — Attempts OpenAI embeddings, falls back to zeros
 - **POST `/api/copy`**, **DELETE `/api/delete`**, **POST `/api/create`**, **POST `/api/pull`**, **POST `/api/push`** — No-op (model management is Ollama-specific)
 
+### OpenAI-compatible endpoints
+
+- **GET `/v1/models`** — Proxies to the backend's `/v1/models` endpoint, returning available models in OpenAI format
+
 ## Usage with Coding Agents
 
 ### OpenCode
