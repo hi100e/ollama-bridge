@@ -19,17 +19,21 @@ Requires Go 1.21+.
 ```bash
 git clone https://github.com/hi100e/ollama-bridge.git
 cd ollama-bridge
-make build   # auto-extracts git tag and injects it as the version
-# or: go build -ldflags="-X main.Version=v0.2.0" -o ollama-bridge .
+go build -o ollama-bridge .
 ```
 
-### Install via `go install` (latest main)
+The version is hardcoded in `main.go` and updated at each release. Check `--version` to confirm:
 
 ```bash
-go install github.com/hi100e/ollama-bridge@v0.2.0
+./ollama-bridge --version   # → ollama-bridge v0.3.0
+```
+
+### Install via `go install` (latest tagged release)
+
+```bash
+go install github.com/hi100e/ollama-bridge@v0.3.0
 # Binary is placed in $GOPATH/bin or ~/go/bin
-# Note: go install does not pass ldflags, so --version will show "dev"
-# To get a proper version with go install, build from source instead.
+# Version reflects the hardcoded value from that tag's source code.
 ```
 
 ## Quick Start
