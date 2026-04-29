@@ -10,20 +10,9 @@ Use it to make coding agents (OpenCode, Claude Code, etc.) talk to local LM Stud
 - No need to pull GGUF files — the bridge maps Ollama model names directly to OpenAI model IDs
 - Supports streaming, tool calling, structured outputs, and all numeric options
 
-## Installation
+## Quick Start
 
-### Option 1 — Download pre-built binary (Linux amd64)
-
-```bash
-# Download the latest release
-curl -L -o ollama-bridge https://github.com/hi100e/ollama-bridge/releases/latest/download/ollama-bridge-linux-amd64
-chmod +x ollama-bridge
-
-# Move to your PATH (optional)
-sudo mv ollama-bridge /usr/local/bin/
-```
-
-### Option 2 — Build from source
+### Build from source
 
 Requires Go 1.21+.
 
@@ -33,17 +22,7 @@ cd ollama-bridge
 go build -o ollama-bridge .
 ```
 
-### Option 3 — Install via `go install` (latest main)
-
-```bash
-go install github.com/hi100e/ollama-bridge@latest
-# Binary is placed in $GOPATH/bin or ~/go/bin
-```
-
-## Quick Start
-
-```bash
-# Configure (optional — defaults work out of the box)
+### Configure (optional — defaults work out of the box)
 cat > config.json <<EOF
 {
   "listen_addr": ":11435",
