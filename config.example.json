@@ -1,0 +1,8 @@
+{
+  "listen_addr": ":11435",
+  "base_url": "http://127.0.0.1:1234/v1",
+  "model_map": {
+    "qwen3.6:35b": "unsloth/qwen3.6-35b-a3b",
+    "qwen3.6-coder:30b": "qwen/qwen3-coder-30b"
+  }
+}
