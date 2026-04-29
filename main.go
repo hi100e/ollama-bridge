@@ -1157,7 +1157,7 @@ func main() {
 	}
 
 	if config.ListenAddr == "" {
-		config.ListenAddr = ":21434"
+		config.ListenAddr = ":21432"
 	}
 	if config.BaseURL == "" {
 		config.BaseURL = "http://127.0.0.1:1234/v1"
